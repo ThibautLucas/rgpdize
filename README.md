@@ -1,7 +1,5 @@
 # Face Anonymizer For Dataset Building with TF2
-<p>
-    <img src="Picsellia.png" width=140 height=195>
-</p>
+
 
 ![TensorFlow Version: 2.4](https://img.shields.io/badge/Tensorflow%20Version-2.2-brightgreen)
 
