@@ -1,18 +1,10 @@
-import requests
 from PIL import Image
 import os
 import numpy as np
 import cv2
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2' 
-import tensorflow as tf
+import tensorflow-gpu as tf
 tf.get_logger().setLevel('ERROR')   
-gpus = tf.config.experimental.list_physical_devices('GPU')
-for gpu in gpus:
-    print(gpu)
-    tf.config.experimental.set_memory_growth(gpu, True)
-
-face_detector = tf.saved_model.load('saved_model')
-
 
 
 def blur(img, bbox, shape="rectangle"):
@@ -33,7 +25,6 @@ def blur(img, bbox, shape="rectangle"):
 def anonymize(face_detector, imgpath, output_dir, threshold=0.5):
     
     im = cv2.imread(imgpath)
-    input_image = preprocess(imgpath)
     input_tensor = tf.convert_to_tensor(im)
     input_tensor = input_tensor[tf.newaxis, ...]
     detections = face_detector(input_tensor)
@@ -55,3 +46,14 @@ def anonymize(face_detector, imgpath, output_dir, threshold=0.5):
     output_path = os.path.join(output_dir,imgpath.split('/')[-1])
     cv2.imwrite(os.path.join(output_dir, imgpath.split('/')[-1]), im)
     return 
+
+
+if __name__ == "__main__":
+    gpus = tf.config.experimental.list_physical_devices('GPU')
+    for gpu in gpus:
+        print(gpu)
+        tf.config.experimental.set_memory_growth(gpu, True)
+
+    face_detector = tf.saved_model.load('saved_model')
+
+    anonymize(face_detector, 'inputs/face1.jpg', 'outputs')
